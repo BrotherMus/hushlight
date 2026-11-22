@@ -60,7 +60,7 @@ export const PALETTE = {
   player: '#f4f1e8',
   playerHidden: '#3fd6c2',
   guard: '#ff9d3c',
-  coneCalm: '255, 232, 150',
+  coneCalm: '150, 205, 255',
   coneSuspicious: '255, 170, 40',
   coneAlert: '255, 60, 60',
   text: '#eef2ff',

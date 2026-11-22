@@ -31,9 +31,9 @@ function paintLampPool(ctx, level, lamp) {
   }
   ctx.closePath();
   const pool = ctx.createRadialGradient(lamp.x, lamp.y, 4, lamp.x, lamp.y, reach);
-  pool.addColorStop(0, 'rgba(255, 206, 120, 0.78)');
-  pool.addColorStop(0.5, 'rgba(255, 186, 96, 0.44)');
-  pool.addColorStop(1, 'rgba(255, 176, 90, 0.1)');
+  pool.addColorStop(0, 'rgba(255, 196, 110, 0.7)');
+  pool.addColorStop(0.5, 'rgba(255, 170, 80, 0.4)');
+  pool.addColorStop(1, 'rgba(255, 160, 70, 0.1)');
   ctx.fillStyle = pool;
   ctx.fill();
 }

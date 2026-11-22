@@ -12,15 +12,12 @@ const STATUS_STYLE = {
   SPOTTED: { color: PALETTE.bad, label: 'SPOTTED! RUN AND HIDE' },
 };
 
-const NOTES = { x: 6, y: HUD_TOP + 312, width: 348, height: 290 };
-
 export function drawHud(ctx, world) {
   drawTopBar(ctx, world);
   drawAwarenessMeter(ctx, world);
   drawStatColumns(ctx, world);
   drawControlsBar(ctx, world);
   drawFieldLabels(ctx, world);
-  if (world.showNotes && !mothUnderNotes(world)) drawThiefNotes(ctx);
 }
 
 // Left: the game and floor. Centre: what to do right now.
@@ -104,58 +101,38 @@ function drawControlsBar(ctx, world) {
   ctx.fillRect(0, y, VIEW_W, HUD_BOTTOM);
   ctx.fillStyle = PALETTE.lamp;
   ctx.fillRect(0, y, VIEW_W, 2);
+  drawThiefNotes(ctx, y + 24);
   ctx.textAlign = 'center';
-  ctx.font = 'bold 19px system-ui, sans-serif';
+  ctx.font = 'bold 17px system-ui, sans-serif';
   ctx.fillStyle = PALETTE.text;
-  ctx.fillText('WASD / ARROWS move  ·  SHIFT sneak  ·  CLICK throw pebble  ·  E snuff lamp  ·  H notes  ·  R retry  ·  P pause', VIEW_W / 2, y + 30);
-  ctx.fillStyle = PALETTE.dim;
-  ctx.font = 'italic 17px Georgia, serif';
-  ctx.fillText(world.level.hint, VIEW_W / 2, y + 57);
+  ctx.fillText('WASD / ARROWS move  ·  SHIFT sneak  ·  CLICK throw pebble  ·  E snuff lamp  ·  H labels  ·  R retry  ·  P pause', VIEW_W / 2, y + 60);
 }
 
-function mothUnderNotes(world) {
-  const { player } = world;
-  return player.x < NOTES.x + NOTES.width + 14 && player.y + HUD_TOP > NOTES.y - 14;
-}
-
-// The thief's notes: every sign on the floor and what it means. H folds them away.
-function drawThiefNotes(ctx) {
-  const { x, y, width, height } = NOTES;
-  ctx.fillStyle = 'rgba(8, 10, 20, 0.94)';
-  ctx.fillRect(x, y, width, height);
-  ctx.strokeStyle = PALETTE.lamp;
-  ctx.lineWidth = 2.5;
-  ctx.strokeRect(x, y, width, height);
-  ctx.textAlign = 'left';
-  ctx.fillStyle = PALETTE.lamp;
-  ctx.font = 'bold 21px Georgia, serif';
-  ctx.fillText("THIEF'S NOTES", x + 14, y + 30);
-  ctx.font = '14px system-ui, sans-serif';
-  ctx.fillStyle = PALETTE.dim;
-  ctx.fillText('H folds them', x + width - 98, y + 28);
-
-  const rows = [
-    [drawWardenSign, 'Warden + cone: what it sees'],
-    [drawHatchSign, 'Hatched: safe behind crates'],
-    [drawLampSign, 'Lamplight: seen from afar'],
-    [drawSnuffedSign, 'E snuffs a lamp for 14 s'],
-    [drawNookSign, 'Shadow nook: stand still, vanish'],
-    [drawRingSign, 'Rings: noise and warden steps'],
-    [drawRouteSign, "Dotted: a warden's patrol loop"],
-    [drawExitSign, 'Exit: opens with every star dial'],
+// The thief's notes, one strip along the bottom: every sign on the floor and what it means.
+function drawThiefNotes(ctx, y) {
+  const notes = [
+    [drawWardenSign, 'Warden + cone'],
+    [drawHatchSign, 'Safe from cone'],
+    [drawLampSign, 'Lamplight: seen'],
+    [drawSnuffedSign, 'Snuffed lamp'],
+    [drawNookSign, 'Nook: vanish'],
+    [drawRingSign, 'Rings: noise'],
+    [drawRouteSign, 'Patrol loop'],
+    [drawExitSign, 'Exit, unseen'],
   ];
-  ctx.font = 'bold 18px system-ui, sans-serif';
-  rows.forEach(([drawSign, text], i) => {
-    const rowY = y + 62 + i * 29;
-    drawSign(ctx, x + 28, rowY - 6);
-    ctx.fillStyle = PALETTE.text;
+  const cell = VIEW_W / notes.length;
+  ctx.font = 'bold 16px system-ui, sans-serif';
+  notes.forEach(([drawSign, text], i) => {
+    const x = i * cell + 24;
+    drawSign(ctx, x, y - 6);
+    ctx.fillStyle = PALETTE.lamp;
     ctx.textAlign = 'left';
-    ctx.fillText(text, x + 54, rowY);
+    ctx.fillText(text, x + 22, y);
   });
 }
 
 function drawWardenSign(ctx, x, y) {
-  ctx.fillStyle = 'rgba(255, 232, 150, 0.6)';
+  ctx.fillStyle = `rgba(${PALETTE.coneCalm}, 0.7)`;
   ctx.beginPath();
   ctx.moveTo(x - 4, y);
   ctx.lineTo(x + 16, y - 9);

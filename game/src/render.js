@@ -55,9 +55,28 @@ function drawFloor(ctx, level) {
       }
     }
   }
+  drawRugs(ctx, level);
   ctx.globalCompositeOperation = 'lighter';
   ctx.drawImage(lightLayerFor(level), 0, 0);
   ctx.globalCompositeOperation = 'source-over';
+}
+
+// Each star dial sits on a plum display rug, so the loot rooms stand out from the halls.
+function drawRugs(ctx, level) {
+  for (const relic of level.relics) {
+    const col = Math.floor(relic.x / TILE);
+    const row = Math.floor(relic.y / TILE);
+    for (let r = row - 1; r <= row + 1; r++) {
+      for (let c = col - 1; c <= col + 1; c++) {
+        if (level.isSolidTile(c, r)) continue;
+        ctx.fillStyle = '#4a1f4f';
+        ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+        ctx.strokeStyle = '#c9963f';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(c * TILE + 5, r * TILE + 5, TILE - 10, TILE - 10);
+      }
+    }
+  }
 }
 
 function drawNooks(ctx, level, time) {
@@ -275,16 +294,16 @@ function drawVisionCone(ctx, level, guard) {
   const tint =
     guard.state === 'chase' ? PALETTE.coneAlert : guard.state === 'patrol' && guard.awareness < 0.05 ? PALETTE.coneCalm : PALETTE.coneSuspicious;
   const fill = ctx.createRadialGradient(guard.x, guard.y, 6, guard.x, guard.y, GUARD_TUNING.sightRange);
-  fill.addColorStop(0, `rgba(${tint}, 0.62)`);
-  fill.addColorStop(1, `rgba(${tint}, 0.2)`);
+  fill.addColorStop(0, `rgba(${tint}, 0.66)`);
+  fill.addColorStop(1, `rgba(${tint}, 0.26)`);
   ctx.beginPath();
   ctx.moveTo(points[0].x, points[0].y);
   for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
   ctx.closePath();
   ctx.fillStyle = fill;
   ctx.fill();
-  ctx.strokeStyle = `rgba(${tint}, 0.85)`;
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = `rgba(${tint}, 0.95)`;
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 }
 
