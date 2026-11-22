@@ -1,5 +1,5 @@
 // Takes the entry's screenshots: serves game/, opens each shots.json query in headless
-// Chrome at 1280x720 and saves what the browser rendered as a JPEG in screenshots/.
+// Chrome at 1280x800 and saves what the browser rendered as a JPEG in screenshots/.
 //   node tools/shots.mjs            every shot in shots.json
 //   node tools/shots.mjs --probe    also print the game state after each shot (for testing)
 import { spawn } from 'node:child_process';
@@ -40,7 +40,7 @@ const chrome = spawn(chromePath, [
   '--headless=new',
   `--remote-debugging-port=${debugPort}`,
   `--user-data-dir=${mkdtempSync(join(tmpdir(), 'hushlight-shots-'))}`,
-  '--window-size=1280,720',
+  '--window-size=1280,800',
   '--hide-scrollbars',
   '--no-first-run',
   'about:blank',
@@ -81,7 +81,7 @@ const send = (method, params = {}) =>
 
 await send('Runtime.enable');
 await send('Page.enable');
-await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false });
+await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
 
 const shots = JSON.parse(readFileSync(join(root, 'shots.json'), 'utf8'));
 mkdirSync(join(root, 'screenshots'), { recursive: true });

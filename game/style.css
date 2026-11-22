@@ -1,4 +1,4 @@
-/* Hushlight page: one canvas, letterboxed at 16:9 on a night-blue page. */
+/* Hushlight page: one canvas, letterboxed at 16:10 on a night-blue page. */
 html, body {
   margin: 0;
   height: 100%;
@@ -14,8 +14,8 @@ body {
 
 #game {
   display: block;
-  width: min(100vw, calc(100vh * 16 / 9));
-  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100vh * 16 / 10));
+  aspect-ratio: 16 / 10;
   cursor: crosshair;
   image-rendering: auto;
 }

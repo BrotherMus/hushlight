@@ -4,9 +4,9 @@ export const TILE = 40;
 export const COLS = 32;
 export const ROWS = 16;
 export const VIEW_W = 1280;
-export const VIEW_H = 720;
-export const HUD_TOP = 44;
-export const HUD_BOTTOM = 36;
+export const VIEW_H = 800;
+export const HUD_TOP = 88;
+export const HUD_BOTTOM = 72;
 
 export const PLAYER_TUNING = {
   radius: 10,

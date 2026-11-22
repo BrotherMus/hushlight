@@ -1,7 +1,7 @@
 // Screenshot poses. ?shot=<name> plays a short scripted scene through the real game
 // (same floors, wardens, detection and drawing) and then freezes the frame for the camera.
 
-import { TILE } from './config.js';
+import { TILE, HUD_TOP } from './config.js';
 import { createWorld, stepWorld } from './world.js';
 import { snuffLamp, throwPebble } from './player.js';
 
@@ -73,7 +73,7 @@ export function applyShot(name, game, update, stepSeconds) {
       throwPebble(world.player, target.x, target.y, world);
     } else if (action === 'mouse') {
       const target = tilePoint(a, b);
-      Object.assign(game.input.mouse, { x: target.x, y: target.y + 44, inside: true });
+      Object.assign(game.input.mouse, { x: target.x, y: target.y + HUD_TOP, inside: true });
     }
   }
   if (world.outcome === 'caught') game.screen = 'caught';

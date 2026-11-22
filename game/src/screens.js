@@ -13,7 +13,8 @@ function centered(ctx, text, y, size, color, weight = 'bold') {
   ctx.font = `${weight} ${size}px system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.fillStyle = color;
-  ctx.fillText(text, VIEW_W / 2, y);
+  // Panels were laid out for a 720-tall view; keep them centred on the taller one.
+  ctx.fillText(text, VIEW_W / 2, y + (VIEW_H - 720) / 2);
 }
 
 export function drawTitleScreen(ctx, time) {
