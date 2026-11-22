@@ -8,7 +8,10 @@
 </head>
 <body>
 <canvas id="game" width="1280" height="800" aria-label="Hushlight: sneak past wardens and their vision cones, hide behind crates and in shadow nooks, steal the star dials and reach the exit unseen"></canvas>
-<p id="how-to-play">WASD or arrows to move, hold Shift to sneak silently, click to throw a pebble that lures wardens, R to retry, P to pause.</p>
+<p id="how-to-play" class="read-aloud">WASD or arrows to move, hold Shift to sneak silently, click to throw a pebble that lures wardens, E to snuff a lamp, R to retry, P to pause.</p>
+<p id="about-detection" class="read-aloud">Detection you can recover from: a warden's awareness fills while Moth is in its cone and drains when sight is broken. Glimpsed, then suspicious (it walks over to look), then spotted (it chases, shouts for help, searches, gives up and returns to its loop).</p>
+<p id="about-patrols" class="read-aloud">Each warden walks a fixed loop drawn as a dotted line, so patrols can be learned and patient routes pay off. Near misses are counted and every floor ends with a rank: GHOST, SHADOW or SURVIVOR. Three floors.</p>
+<p id="about-sound-and-light" class="read-aloud">Warden footsteps are synthesised, panned and faded by where the warden is, and leave rings on the floor. Running is heard, sneaking is silent. Lamps cast shadows behind walls and crates; dark floor is safe; teal hatching marks cover.</p>
 <script type="module" src="./src/main.js"></script>
 </body>
 </html>

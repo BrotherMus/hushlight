@@ -20,8 +20,8 @@ body {
   image-rendering: auto;
 }
 
-/* Read by screen readers, never shown. */
-#how-to-play {
+/* Read by screen readers, never shown: how to play and what the game does. */
+.read-aloud {
   position: absolute;
   width: 1px;
   height: 1px;
