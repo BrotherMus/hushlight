@@ -1,0 +1,31 @@
+/* Hushlight page: one canvas, letterboxed at 16:9 on a night-blue page. */
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #05070d;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game {
+  display: block;
+  width: min(100vw, calc(100vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  cursor: crosshair;
+  image-rendering: auto;
+}
+
+/* Read by screen readers, never shown. */
+#how-to-play {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,6 @@
+[
+  { "name": "1-foyer-sneak.jpg", "query": "?shot=cover" },
+  { "name": "2-gallery-alarm.jpg", "query": "?shot=alarm" },
+  { "name": "3-vault-hidden.jpg", "query": "?shot=hidden" },
+  { "name": "4-heist-complete.jpg", "query": "?shot=cleared" }
+]
