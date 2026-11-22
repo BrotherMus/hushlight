@@ -4,6 +4,8 @@ import { HUD_TOP, PLAYER_TUNING } from './config.js';
 import { castRay, distance } from './geometry.js';
 import { isSneaking, moveAxis } from './input.js';
 import { emitNoise } from './noise.js';
+import { snuffLampNear } from './level.js';
+import { addFloatingText, addRing } from './effects.js';
 import { playPebbleClack, playPlayerFootstep } from './sound.js';
 
 export function createPlayer(level) {
@@ -37,10 +39,21 @@ export function updatePlayer(player, input, dt, world) {
   // A nook hides you only while you are still or creeping.
   player.hidden = level.isNookAt(player.x, player.y) && (!player.moving || player.sneaking);
 
+  if (input.tapped.has('KeyE') || input.tapped.has('Space')) snuffLamp(player, world);
   makeFootstepNoise(player, dt, world);
   player.pebbleCooldown = Math.max(0, player.pebbleCooldown - dt);
   for (const click of input.clicks) throwPebble(player, click.x, click.y - HUD_TOP, world);
   flyPebble(player, dt, world);
+}
+
+// E: pinch out the lamp beside you. Its pool goes dark, and so does your way through it.
+export function snuffLamp(player, world) {
+  const lamp = snuffLampNear(world.level, player.x, player.y);
+  if (!lamp) return false;
+  world.stats.lampsSnuffed += 1;
+  addRing(world, lamp.x, lamp.y, 60, '255, 217, 138', 0.5);
+  addFloatingText(world, lamp.x, lamp.y - 18, 'lamp snuffed', '#ffd98a', 1.5);
+  return true;
 }
 
 function makeFootstepNoise(player, dt, world) {

@@ -40,6 +40,7 @@ function update(dt) {
     stepWorld(world, { held: new Set(), tapped: new Set(), clicks: [], mouse: input.mouse }, dt);
     if (confirmPressed()) startFloor(0);
   } else if (game.screen === 'play') {
+    if (input.tapped.has('KeyH')) world.showNotes = !world.showNotes;
     if (input.tapped.has('KeyP')) game.screen = 'paused';
     else if (input.tapped.has('KeyR')) startFloor(world.levelIndex);
     else {

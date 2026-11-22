@@ -4,7 +4,7 @@
 import { GUARD_TUNING } from './config.js';
 import { findPath, tileCenter } from './level.js';
 import { distance, turnToward, hasLineOfSight } from './geometry.js';
-import { addRing, addFloatingText } from './effects.js';
+import { addRing } from './effects.js';
 import { playGuardFootstep } from './sound.js';
 
 export function createGuards(level) {
@@ -34,12 +34,30 @@ export function createGuards(level) {
       seesPlayer: false,
       strideLeft: GUARD_TUNING.strideLength,
       clock: id * 1.7,
+      loop: tracePatrolLoop(level, stops),
+      speech: null,
     };
   });
 }
 
+// The whole loop a warden walks, stop to stop, so the floor can show it as a dotted line.
+function tracePatrolLoop(level, stops) {
+  const points = [stops[0]];
+  for (let i = 0; i < stops.length; i++) {
+    const from = stops[i];
+    const to = stops[(i + 1) % stops.length];
+    points.push(...findPath(level, from.x, from.y, to.x, to.y));
+  }
+  return points;
+}
+
+function say(guard, text) {
+  guard.speech = { text, seconds: 2.2 };
+}
+
 export function updateGuard(guard, dt, world) {
   guard.clock += dt;
+  if (guard.speech && (guard.speech.seconds -= dt) <= 0) guard.speech = null;
   if (guard.state === 'patrol') patrolRoute(guard, dt, world);
   else if (guard.state === 'investigate') investigateTarget(guard, dt, world);
   else if (guard.state === 'chase') chasePlayer(guard, dt, world);
@@ -47,9 +65,9 @@ export function updateGuard(guard, dt, world) {
 }
 
 // A noise or a glimpse: stop, turn to it, then walk over for a look.
-export function startInvestigating(guard, x, y, world) {
+export function startInvestigating(guard, x, y, world, heard = false) {
   if (guard.state === 'chase') return;
-  if (guard.state !== 'investigate') addFloatingText(world, guard.x, guard.y - 26, '?', '#ffb428', 1.2);
+  if (guard.state !== 'investigate') say(guard, heard ? 'Hm? A sound...' : 'Who goes there?');
   guard.state = 'investigate';
   guard.target = { x, y };
   guard.noticeTimer = 0.55;
@@ -60,7 +78,7 @@ export function startChasing(guard, world) {
   guard.state = 'chase';
   guard.repathTimer = 0;
   guard.lastSeen = { x: world.player.x, y: world.player.y };
-  addFloatingText(world, guard.x, guard.y - 26, '!', '#ff4d4d', 1.4);
+  say(guard, 'Stop, thief!');
 }
 
 // Walls muffle sound: a noise carries less far without a clear line to the warden.
@@ -68,7 +86,7 @@ export function hearNoise(guard, x, y, radius, world) {
   if (guard.state === 'chase') return;
   const clear = hasLineOfSight(world.level, x, y, guard.x, guard.y);
   const reach = clear ? radius : radius * 0.65;
-  if (distance(guard.x, guard.y, x, y) <= reach) startInvestigating(guard, x, y, world);
+  if (distance(guard.x, guard.y, x, y) <= reach) startInvestigating(guard, x, y, world, true);
 }
 
 function patrolRoute(guard, dt, world) {
@@ -135,7 +153,7 @@ function searchAround(guard, dt, world) {
   guard.path = [];
   guard.waitTimer = 0;
   guard.awareness = 0;
-  addFloatingText(world, guard.x, guard.y - 26, '...', '#93a0c8', 1.2);
+  say(guard, 'Just the wind.');
 }
 
 // Sweep the cone left and right of where the warden was facing.

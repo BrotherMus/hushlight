@@ -37,6 +37,7 @@ export function buildLevel(definition) {
     const t = level.tileAt(col, row);
     return t === '#' || t === 'c';
   };
+  level.tileAtPoint = (x, y) => level.tileAt(Math.floor(x / TILE), Math.floor(y / TILE));
   level.blocksSightAt = (x, y) => level.isSolidTile(Math.floor(x / TILE), Math.floor(y / TILE));
   level.isNookAt = (x, y) => level.tileAt(Math.floor(x / TILE), Math.floor(y / TILE)) === 'n';
   level.lightAt = (x, y) => {
@@ -59,7 +60,7 @@ export function buildLevel(definition) {
     for (let c = 0; c < COLS; c++) {
       const t = rows[r][c];
       const center = tileCenter(c, r);
-      if (t === 'L') level.lamps.push({ ...center, radius: LAMP_RADIUS });
+      if (t === 'L') level.lamps.push({ ...center, radius: LAMP_RADIUS, lit: true, darkSeconds: 0 });
       if (t === 'g') level.relics.push({ ...center, taken: false });
       if (t === 'c') level.crates.push({ col: c, row: r });
       if (t === 'n') level.nooks.push({ col: c, row: r });
@@ -71,14 +72,18 @@ export function buildLevel(definition) {
   return level;
 }
 
-// Each floor tile remembers how brightly the lamps reach it (0 dark .. 1 under a lamp).
-function bakeLight(level) {
+// Each floor tile remembers how brightly the lit lamps reach it (0 dark .. 1 under a lamp).
+// Crates and walls cast shadows: a tile a lamp cannot see stays dark.
+export function bakeLight(level) {
+  level.lightVersion = (level.lightVersion || 0) + 1;
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
+      level.light[r * COLS + c] = 0;
       if (level.isSolidTile(c, r)) continue;
       const { x, y } = tileCenter(c, r);
       let brightest = 0;
       for (const lamp of level.lamps) {
+        if (!lamp.lit) continue;
         const d = Math.hypot(lamp.x - x, lamp.y - y);
         if (d > lamp.radius) continue;
         if (!hasLineOfSight(level, lamp.x, lamp.y, x, y)) continue;
@@ -86,6 +91,37 @@ function bakeLight(level) {
       }
       level.light[r * COLS + c] = brightest;
     }
+  }
+}
+
+export const LAMP_DARK_SECONDS = 14;
+const LAMP_SNUFF_REACH = 62;
+
+// Moth pinches out the nearest lit lamp in reach; it stays dark for a while, then relights.
+export function snuffLampNear(level, x, y) {
+  let nearest = null;
+  let best = LAMP_SNUFF_REACH;
+  for (const lamp of level.lamps) {
+    const d = Math.hypot(lamp.x - x, lamp.y - y);
+    if (lamp.lit && d <= best) {
+      nearest = lamp;
+      best = d;
+    }
+  }
+  if (!nearest) return null;
+  nearest.lit = false;
+  nearest.darkSeconds = LAMP_DARK_SECONDS;
+  bakeLight(level);
+  return nearest;
+}
+
+export function updateLamps(level, dt) {
+  for (const lamp of level.lamps) {
+    if (lamp.lit) continue;
+    lamp.darkSeconds -= dt;
+    if (lamp.darkSeconds > 0) continue;
+    lamp.lit = true;
+    bakeLight(level);
   }
 }
 

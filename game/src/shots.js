@@ -3,19 +3,21 @@
 
 import { TILE } from './config.js';
 import { createWorld, stepWorld } from './world.js';
-import { throwPebble } from './player.js';
+import { snuffLamp, throwPebble } from './player.js';
 
 const tilePoint = (col, row) => ({ x: col * TILE + TILE / 2, y: row * TILE + TILE / 2 });
 
 // Each step: ['wait', seconds, heldKeys?] | ['place', col, row] | ['take', relicIndex]
-//          | ['pebble', col, row] | ['mouse', col, row]
+//          | ['pebble', col, row] | ['mouse', col, row] | ['snuff', col, row]
 const SCENES = {
   cover: {
     floor: 0,
     // A pebble through the doorway lures one warden; Moth is glimpsed, then ducks behind crates.
     steps: [
-      ['wait', 7],
+      ['wait', 6.4],
       ['take', 0],
+      ['snuff', 24, 3],
+      ['wait', 0.6],
       ['place', 25, 6],
       ['pebble', 26, 8],
       ['wait', 1.6],
@@ -63,6 +65,9 @@ export function applyShot(name, game, update, stepSeconds) {
     } else if (action === 'take') {
       Object.assign(world.player, { x: world.level.relics[a].x, y: world.level.relics[a].y });
       stepWorld(world, input, stepSeconds);
+    } else if (action === 'snuff') {
+      Object.assign(world.player, tilePoint(a, b));
+      snuffLamp(world.player, world);
     } else if (action === 'pebble') {
       const target = tilePoint(a, b);
       throwPebble(world.player, target.x, target.y, world);

@@ -26,7 +26,7 @@ export function drawTitleScreen(ctx, time) {
   centered(ctx, 'A top-down stealth heist in Orrery House', 280, 30, PALETTE.text);
   centered(ctx, 'Wardens see in cones. Light betrays you. Crates and shadow nooks hide you.', 345, 22, PALETTE.dim, 'normal');
   centered(ctx, 'Steal every star dial, then reach the EXIT unseen.', 380, 22, PALETTE.dim, 'normal');
-  centered(ctx, 'WASD move  ·  SHIFT sneak  ·  CLICK throw a pebble to lure wardens', 445, 24, PALETTE.relic);
+  centered(ctx, 'WASD move  ·  SHIFT sneak  ·  CLICK throw a pebble  ·  E snuff a lamp', 445, 24, PALETTE.relic);
   if (Math.sin(time * 4) > -0.4) centered(ctx, 'PRESS ENTER OR CLICK TO BEGIN', 540, 40, PALETTE.good);
   centered(ctx, '3 floors  ·  learnable patrols  ·  awareness meter  ·  GHOST rank for a perfect run', 610, 20, PALETTE.dim, 'normal');
 }
@@ -52,7 +52,7 @@ export function drawClearedScreen(ctx, world, isLastFloor) {
   centered(ctx, isLastFloor ? 'HEIST COMPLETE' : 'FLOOR CLEARED', 200, 100, PALETTE.good);
   centered(ctx, `RANK: ${rank}`, 290, 64, rank === 'GHOST' ? PALETTE.relic : PALETTE.lamp);
   centered(ctx, `Time ${formatTime(world.time)}   ·   Times spotted ${stats.timesSpotted}   ·   Close calls ${stats.closeCalls}`, 360, 28, PALETTE.text);
-  centered(ctx, `Near misses ${stats.nearMisses}   ·   Pebbles thrown ${stats.pebblesThrown}   ·   Star dials ${world.relicsTaken}/${world.level.relics.length}`, 405, 26, PALETTE.dim, 'normal');
+  centered(ctx, `Near misses ${stats.nearMisses}   ·   Pebbles ${stats.pebblesThrown}   ·   Lamps snuffed ${stats.lampsSnuffed}   ·   Star dials ${world.relicsTaken}/${world.level.relics.length}`, 405, 26, PALETTE.dim, 'normal');
   centered(ctx, 'GHOST: never suspected   SHADOW: never chased   SURVIVOR: chased and escaped', 465, 20, PALETTE.dim, 'normal');
   centered(ctx, isLastFloor ? 'Moth vanishes into the night. PRESS ENTER TO PLAY AGAIN' : 'PRESS ENTER FOR THE NEXT FLOOR', 550, 38, PALETTE.warn);
 }

@@ -62,7 +62,7 @@ export const LEVELS = [
   },
   {
     name: 'Floor 3 · The Dial Vault',
-    hint: 'Four wardens. Learn the loops, wait in the nooks, leave no trace.',
+    hint: 'Five wardens. Learn the loops, wait in the nooks, leave no trace.',
     map: [
       '################################',
       '#S....#....n....#g.....#.......#',

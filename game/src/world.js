@@ -2,7 +2,7 @@
 
 import { GUARD_TUNING } from './config.js';
 import { LEVELS } from './levels.js';
-import { buildLevel } from './level.js';
+import { buildLevel, updateLamps } from './level.js';
 import { distance } from './geometry.js';
 import { createPlayer, updatePlayer } from './player.js';
 import { createGuards, updateGuard } from './guards.js';
@@ -26,7 +26,8 @@ export function createWorld(levelIndex) {
     relicsTaken: 0,
     exitOpen: false,
     outcome: null,
-    stats: { timesSpotted: 0, closeCalls: 0, nearMisses: 0, pebblesThrown: 0 },
+    stats: { timesSpotted: 0, closeCalls: 0, nearMisses: 0, pebblesThrown: 0, lampsSnuffed: 0 },
+    showNotes: levelIndex === 0,
   };
 }
 
@@ -34,6 +35,7 @@ export function createWorld(levelIndex) {
 export function stepWorld(world, input, dt) {
   if (world.outcome) return;
   world.time += dt;
+  updateLamps(world.level, dt);
   updatePlayer(world.player, input, dt, world);
   for (const guard of world.guards) updateGuard(guard, dt, world);
   updateDetection(world, dt);

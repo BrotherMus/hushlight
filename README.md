@@ -15,6 +15,9 @@ night. Steal every star dial on the floor, then reach the exit unseen.
   cone and drains when it loses you: glimpsed, then suspicious (it walks over to look), then
   spotted (it chases and shouts for help). Break line of sight and it searches, gives up, and
   walks back to its loop.
+- **Light you can change.** Lamps cast pools that walls and crates cut into shadow. Press E beside
+  a lamp to snuff it for 14 seconds and carve a dark path. Teal hatching shows the floor a crate
+  hides from each warden, and a dotted line shows each warden's loop.
 - **Sound.** Running is heard; sneaking is silent. Warden footsteps are panned and faded by where
   the warden is, and leave rings on the floor. Throw a pebble to pull a warden off its route.
 - **Three floors** (The Foyer, The Long Gallery, The Dial Vault) and a rank for each: GHOST,

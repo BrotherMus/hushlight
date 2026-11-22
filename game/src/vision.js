@@ -17,6 +17,33 @@ export function buildConePolygon(level, guard) {
   return points;
 }
 
+// The safe shadows behind cover: for each ray a crate stops, the stretch of floor from the
+// far side of the crate to the next wall (or the cone's end) that the warden cannot see.
+export function buildCoverShadows(level, guard) {
+  const half = GUARD_TUNING.fieldOfView / 2;
+  const range = GUARD_TUNING.sightRange;
+  const slices = [];
+  for (let i = 0; i <= CONE_RAYS; i++) {
+    const angle = guard.heading - half + (GUARD_TUNING.fieldOfView * i) / CONE_RAYS;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    let d = castRay(level, guard.x, guard.y, angle, range) + 4;
+    const tileAt = (dist) => level.tileAtPoint(guard.x + cos * dist, guard.y + sin * dist);
+    if (d >= range || tileAt(d) !== 'c') {
+      slices.push(null);
+      continue;
+    }
+    while (d < range && tileAt(d) === 'c') d += 4;
+    const from = d;
+    while (d < range && tileAt(d) !== '#') d += 4;
+    slices.push(d - from < 8 ? null : {
+      nearX: guard.x + cos * from, nearY: guard.y + sin * from,
+      farX: guard.x + cos * d, farY: guard.y + sin * d,
+    });
+  }
+  return slices;
+}
+
 // How far this warden can make Moth out where Moth stands now.
 export function sightRangeFor(level, player) {
   const light = level.lightAt(player.x, player.y);
